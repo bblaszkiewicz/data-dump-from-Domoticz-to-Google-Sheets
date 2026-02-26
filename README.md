@@ -86,11 +86,6 @@ WORKSHEET_NAME   = "Data"
 CREDENTIALS_FILE = "/home/pi/credentials.json"
 BUFFER_FILE      = "/home/pi/domoticz_buffer.csv"
 LOG_FILE         = "/home/pi/domoticz_backup.log"
-
-scopes = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
 ```
 
 > **Note:** Domoticz 2023.2+ changed the API format.  
@@ -124,74 +119,3 @@ Add this line:
 ```
 
 ---
-
-## 📋 Data Format
-
-Each row written to Google Sheets:
-
-| Column | Description |
-|---|---|
-| `Timestamp` | Date and time of the reading |
-| `Name` | Sensor name from Domoticz |
-| `idx` | Domoticz device ID |
-| `Value` | Current sensor reading |
-| `Unit` | Unit of measurement (°C, %, lux, etc.) |
-
----
-
-## 🛠️ Troubleshooting
-
-### `403 Insufficient Authentication Scopes`
-Make sure both scopes are included in the script:
-```python
-scopes = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
-```
-Also verify the Service Account has **Editor** access to the Google Sheet.
-
----
-
-### `401 Unauthorized` from Domoticz
-Disable login requirement for local connections in Domoticz:  
-**Setup → Settings → Security → Local Networks** — add `127.0.0.1`
-
----
-
-### `404 Not Found` from Domoticz API
-You may be running Domoticz 2023.2+. Update your URL:
-```
-/json.htm?type=command&param=getdevices&filter=all&used=true&order=Name
-```
-
----
-
-### Private key errors
-Make sure `credentials.json` is the **original unmodified file** downloaded from Google Cloud. Do not edit it manually.
-
----
-
-### Buffered data not sending
-Check the log file for errors:
-```bash
-cat /home/pi/domoticz_backup.log
-```
-The script automatically retries sending buffered rows on each run.
-
----
-
-## 📁 File Overview
-
-| File | Purpose |
-|---|---|
-| `domoticz_backup.py` | Main script |
-| `credentials.json` | Google Service Account key |
-| `domoticz_buffer.csv` | Local buffer for unsent data |
-| `domoticz_backup.log` | Log file |
-
----
-
-## 📄 License
-
-MIT
