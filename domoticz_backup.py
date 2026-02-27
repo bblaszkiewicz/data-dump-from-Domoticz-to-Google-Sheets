@@ -17,7 +17,7 @@ WORKSHEET_NAME = "Data"
 CREDENTIALS_FILE = "/home/pi/credentials.json"
 BUFFER_FILE = "/home/pi/domoticz_buffer.csv"
 LOG_FILE = "/home/pi/domoticz_backup.log"
-MAX_ROWS = 1000
+MAX_ROWS = 2000
 TRIM_ROWS = 500
 
 # =======================
@@ -43,9 +43,8 @@ def parse_devices(data):
         name = device.get("Name", "")
         idx = device.get("idx", "")
         value = device.get("Data", "")
-        unit = device.get("Unit", "")
 
-        rows.append([timestamp, name, idx, value, unit])
+        rows.append([timestamp, name, idx, value])
 
     return rows
 
@@ -64,7 +63,7 @@ def send_to_sheets(rows):
 
     current_rows = len(sheet.get_all_values())
     if current_rows >= MAX_ROWS:
-        sheet.delete_rows(1, TRIM_ROWS)
+        sheet.delete_rows(2, TRIM_ROWS)
         log(f"Trimmed {TRIM_ROWS} oldest rows (was {current_rows})")
 
     sheet.append_rows(rows, value_input_option="RAW")
