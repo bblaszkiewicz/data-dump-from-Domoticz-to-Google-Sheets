@@ -17,6 +17,8 @@ WORKSHEET_NAME = "Data"
 CREDENTIALS_FILE = "/home/pi/credentials.json"
 BUFFER_FILE = "/home/pi/domoticz_buffer.csv"
 LOG_FILE = "/home/pi/domoticz_backup.log"
+MAX_ROWS = 1000
+TRIM_ROWS = 500
 
 # =======================
 
@@ -59,6 +61,12 @@ def send_to_sheets(rows):
     client = gspread.authorize(creds)
 
     sheet = client.open(SPREADSHEET_NAME).worksheet(WORKSHEET_NAME)
+
+    current_rows = len(sheet.get_all_values())
+    if current_rows >= MAX_ROWS:
+        sheet.delete_rows(1, TRIM_ROWS)
+        log(f"Trimmed {TRIM_ROWS} oldest rows (was {current_rows})")
+
     sheet.append_rows(rows, value_input_option="RAW")
 
 def send_buffer_if_exists():
