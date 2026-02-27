@@ -8,7 +8,7 @@ from datetime import datetime
 from google.oauth2.service_account import Credentials
 
 # =======================
-# KONFIGURACJA
+# CONFIG
 # ======================
 
 DOMOTICZ_URL = "http://127.0.0.1/json.htm?type=command&param=getdevices&filter=all&used=true&order=Name"
